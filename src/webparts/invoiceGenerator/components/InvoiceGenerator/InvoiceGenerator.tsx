@@ -162,7 +162,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
       subtotal: this.calculateSubtotal(),
       tax: this.calculateTax(),
       total: this.calculateTotal(),
-      invoiceNumber: selectedInvoice?.ID,
+      invoiceNumber: selectedInvoice?.Id,
       customerName: selectedInvoice?.Title,
       customerAddress: selectedInvoice?.billTo,
       companyAddress: this.props.companyAddress,
@@ -255,7 +255,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                   label='Pick your list'
                   options={invoices.map((invoice, index) => ({
                     key: index.toString(),
-                    text: `${strings.invoiceText} ${invoice.ID} - ${invoice.Title}`
+                    text: `${strings.invoiceText} ${invoice.Id} - ${invoice.Title}`
                   }))}
                   selectedKey={selectedInvoiceIndex}
                   onChanged={(option: IDropdownOption) => {
@@ -275,7 +275,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                   <div className={styles.title}>{strings.invoiceTitle}</div>
                 </div>
                 <InvoiceHeader
-                  invoiceNumber={invoices[Number(selectedInvoiceIndex)]?.ID}
+                  invoiceNumber={invoices[Number(selectedInvoiceIndex)]?.Id}
                   customerName={invoices[Number(selectedInvoiceIndex)]?.Title}
                   customerAddress={invoices[Number(selectedInvoiceIndex)]?.billTo}
                   companyAddress={companyAddress}
