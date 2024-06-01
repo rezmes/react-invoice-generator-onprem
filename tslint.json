@@ -1,6 +1,28 @@
 {
   "extends": "@microsoft/sp-tslint-rules/base-tslint.json",
   "rules": {
+    "no-duplicate-switch-case": true,
+    "typeof-compare": true,
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-static-field",
+          "protected-static-field",
+          "private-static-field",
+          "public-static-method",
+          "protected-static-method",
+          "private-static-method",
+          "public-instance-field",
+          "protected-instance-field",
+          "private-instance-field",
+          "constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
+        ]
+      }
+    ],
     "class-name": false,
     "export-name": false,
     "forin": false,

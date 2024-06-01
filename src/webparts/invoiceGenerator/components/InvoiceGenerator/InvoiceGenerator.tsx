@@ -3,7 +3,6 @@ import styles from './InvoiceGenerator.module.scss';
 import { IInvoiceGeneratorProps } from './IInvoiceGeneratorProps';
 import { InvoiceHeader } from './InvoiceHeader/InvoiceHeader';
 import { InvoiceSummary } from './InvoiceSummary/InvoiceSummary';
-import { PDFGenerator } from './PDFGenerator/PDFGenerator';
 import { InvoiceItemRow } from './InvoiceItemRow/InvoiceItemRow';
 import { InvoiceService } from '../../services/InvoiceService';
 import { IInvoiceItem, IInvoice } from '../../models';
@@ -15,15 +14,15 @@ import {
 } from 'office-ui-fabric-react';
 import * as strings from 'InvoiceGeneratorWebPartStrings';
 import { Customizer } from 'office-ui-fabric-react/lib/Utilities';
-import html2pdf from 'html2pdf.js';
+import * as html2pdf from 'html2pdf.js';
 
-const Plus = () => <Icon iconName="CirclePlus" />;
+const Plus = function() { return <Icon iconName='CirclePlus' />; };
 
 interface IInvoiceGeneratorState {
   invoices: IInvoice[];
   selectedInvoiceIndex: string;
   invoiceItems: IInvoiceItem[];
-  selectedItem: IInvoiceItem | null;
+  selectedItem: IInvoiceItem | undefined;
   itemDescription: string;
   quantity: number;
   price: number;
@@ -42,7 +41,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
       invoices: [],
       selectedInvoiceIndex: '0',
       invoiceItems: [],
-      selectedItem: null,
+      selectedItem: undefined,
       itemDescription: '',
       quantity: 0,
       price: 0,
@@ -116,7 +115,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
       const updatedItems = invoiceItems.filter((item) => item !== selectedItem);
       this.setState({
         invoiceItems: updatedItems,
-        selectedItem: null,
+        selectedItem: undefined,
         itemDescription: '',
         quantity: 0,
         price: 0
@@ -141,7 +140,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
       totalAmount: quantity * price
     };
 
-    const updatedItems = [...invoiceItems, newInvoiceItem];
+    const updatedItems = invoiceItems.concat(newInvoiceItem);
 
     this.setState({
       invoiceItems: updatedItems,
@@ -231,7 +230,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
         <div className={styles.invoiceGenerator}>
           {(!invoices || invoices.length === 0 || !listId) && (
             <div className={styles.placeholderWrapper}>
-              <Icon iconName="Edit" className={styles.placeholderIcon} />
+              <Icon iconName='Edit' className={styles.placeholderIcon} />
               <div className={styles.placeholderText}>Configure your web part</div>
               <div className={styles.placeholderDescription}>
                 Please configure the web part properties.
@@ -247,13 +246,13 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
             </div>
           )}
           {invoices && invoices.length > 0 && (
-            <>
+            <div>
               <div className={styles.invoiceSelect}>
                 <label style={{ marginRight: '8px', fontWeight: 'bold' }}>
                   {strings.selectInvoicesLabel}
                 </label>
                 <Dropdown
-                  label="Pick your list"
+                  label='Pick your list'
                   options={invoices.map((invoice, index) => ({
                     key: index.toString(),
                     text: `${strings.invoiceText} ${invoice.ID} - ${invoice.Title}`
@@ -264,14 +263,14 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                   }}
                 />
               </div>
-              <div id="invoice-container">
+              <div id='invoice-container'>
                 <div className={styles.header}>
                   <img
                     className={styles.companyLogo}
                     src={logoImage}
                     alt={strings.companyLogoAlt}
-                    height="100"
-                    width="100"
+                    height='100'
+                    width='100'
                   />
                   <div className={styles.title}>{strings.invoiceTitle}</div>
                 </div>
@@ -287,7 +286,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                   onIssueDateChange={this.setIssueDate}
                   onDueDateChange={this.setDueDate}
                 />
-                <div className={styles.itemsContainer}>
+                  <div className={styles.itemsContainer}>
                   <div className={styles.itemsTable}>
                     <div className={styles.itemsTableHeader}>
                       <div className={styles.itemDescription}>{strings.itemDescriptionText}</div>
@@ -300,7 +299,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                       <div className={styles.addItem}>
                         <div className={styles.inputWrapper}>
                           <input
-                            type="text"
+                            type='text'
                             placeholder={strings.itemDescriptionPlaceholder}
                             value={itemDescription}
                             onChange={(e) => this.setState({ itemDescription: e.target.value })}
@@ -308,7 +307,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                         </div>
                         <div className={styles.inputWrapper}>
                           <input
-                            type="number"
+                            type='number'
                             placeholder={strings.quantityPlaceholder}
                             value={quantity}
                             onChange={(e) => this.setState({ quantity: parseInt(e.target.value, 10) })}
@@ -316,13 +315,13 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                         </div>
                         <div className={styles.inputWrapper}>
                           <input
-                            type="number"
+                            type='number'
                             placeholder={strings.pricePlaceholder}
                             value={price}
                             onChange={(e) => this.setState({ price: parseFloat(e.target.value) })}
                           />
                         </div>
-                        <div onClick={this.handleAddItem} className={styles.submitButton}>
+                        <div onClick={this.handleAddItem} className={styles.submitButton} role='button'>
                           {strings.submitButtonText}
                         </div>
                       </div>
@@ -338,7 +337,7 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                       />
                     ))}
 
-                    <div className={styles.fullWidthPlusButton} onClick={this.toggleAddItemForm}>
+                    <div className={styles.fullWidthPlusButton} onClick={this.toggleAddItemForm} role='button'>
                       <Plus />{strings.addItemButtonText}
                     </div>
 
@@ -353,11 +352,11 @@ class InvoiceGenerator extends React.Component<IInvoiceGeneratorProps, IInvoiceG
                     </div>
                   </div>
                 </div>
-                <div className={styles.generatePdfButton} onClick={this.handlePdfGeneration}>
+                <div className={styles.generatePdfButton} onClick={this.handlePdfGeneration} role='button'>
                   {strings.generatePdfButtonText}
                 </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       </Customizer>

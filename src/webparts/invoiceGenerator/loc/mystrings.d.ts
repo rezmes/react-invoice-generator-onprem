@@ -1,14 +1,11 @@
+// In your InvoiceGeneratorWebPartStrings.d.ts file
 declare interface IInvoiceGeneratorWebPartStrings {
   PropertyPaneDescription: string;
   BasicGroupName: string;
   DescriptionFieldLabel: string;
-  TaxRateFieldLabel: string;
   CompanyNameFieldLabel: string;
   CompanyAddressFieldLabel: string;
-  selectInvoicesLabel: string;
-  invoiceText: string;
-  invoiceTitle: string;
-  companyLogoAlt: string;
+  TaxRateFieldLabel: string;
   itemDescriptionText: string;
   quantityText: string;
   priceText: string;
@@ -18,7 +15,11 @@ declare interface IInvoiceGeneratorWebPartStrings {
   pricePlaceholder: string;
   submitButtonText: string;
   addItemButtonText: string;
-  downloadPdfButtonText: string;
+  invoiceTitle: string;
+  companyLogoAlt: string;
+  selectInvoicesLabel: string;
+  invoiceText: string;
+  generatePdfButtonText: string; // Add this line
 }
 
 declare module 'InvoiceGeneratorWebPartStrings' {

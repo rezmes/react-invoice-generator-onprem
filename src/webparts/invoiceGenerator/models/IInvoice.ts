@@ -1,5 +1,5 @@
 export interface IInvoice {
-    ID: number;
+    Id: number;
     Title: string;
     billTo: string;
   }

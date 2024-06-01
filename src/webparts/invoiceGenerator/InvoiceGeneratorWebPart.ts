@@ -9,11 +9,11 @@ import {
   PropertyPaneTextField,
   PropertyPaneToggle
 } from '@microsoft/sp-webpart-base';
-import { Version } from '@microsoft/sp-core-library';
 import * as strings from 'InvoiceGeneratorWebPartStrings';
 import { IInvoiceGeneratorProps } from './components/InvoiceGenerator/IInvoiceGeneratorProps';
-import  InvoiceGenerator  from './components/InvoiceGenerator/InvoiceGenerator';
+import InvoiceGenerator from './components/InvoiceGenerator/InvoiceGenerator';
 import { InvoiceService } from './services/InvoiceService';
+import { IInvoice } from './models';
 
 export interface IInvoiceGeneratorWebPartProps {
   description: string;
@@ -30,18 +30,6 @@ export interface IInvoiceGeneratorWebPartProps {
 export default class InvoiceGeneratorWebPart extends BaseClientSideWebPart<IInvoiceGeneratorWebPartProps> {
   private _invoiceService: InvoiceService;
 
-  protected async onInit(): Promise<void> {
-    this._invoiceService = new InvoiceService(this.context);
-
-    const availableLists = await this._invoiceService.getLists();
-      this.properties.listIdOptions = availableLists.map((list) => ({
-        key: list.Id,
-        text: list.Title
-      }));
-
-      return super.onInit();
-  }
-
   public render(): void {
     const element: React.ReactElement<IInvoiceGeneratorProps> = React.createElement(InvoiceGenerator, {
       logoImage: this.properties.logoImage,
@@ -56,30 +44,40 @@ export default class InvoiceGeneratorWebPart extends BaseClientSideWebPart<IInvo
     ReactDom.render(element, this.domElement);
   }
 
+  protected async onInit(): Promise<void> {
+    this._invoiceService = new InvoiceService(this.context);
+
+    const availableLists: IInvoice[] = await this._invoiceService.getLists();
+    this.properties.listIdOptions = availableLists.map((list: IInvoice) => ({
+      key: list.Id,
+      text: list.Title
+    }));
+
+    return super.onInit();
+  }
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
   }
-
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     const { createListToggle, listId, listIdOptions } = this.properties;
 
-    const PropertyPaneFields = [
+    const propertyPaneFields = [
       PropertyPaneToggle('createListToggle', {
         label: 'Do you want to create a new list?',
         checked: createListToggle
       }),
 
       createListToggle &&
-        PropertyPaneTextField('listName', {
-          label: 'New list name',
-          onGetErrorMessage: this.validateListName.bind(this)
-        }),
+      PropertyPaneTextField('listName', {
+        label: 'New list name',
+        onGetErrorMessage: this.validateListName.bind(this)
+      }),
       createListToggle &&
-        PropertyPaneButton('CreateList', {
-          text: 'Create List',
-          buttonType: PropertyPaneButtonType.Normal,
-          onClick: this.createList.bind(this)
-        }),
+      PropertyPaneButton('CreateList', {
+        text: 'Create List',
+        buttonType: PropertyPaneButtonType.Normal,
+        onClick: this.createList.bind(this)
+      }),
 
       PropertyPaneDropdown('listId', {
         label: 'Pick your list',
@@ -112,45 +110,43 @@ export default class InvoiceGeneratorWebPart extends BaseClientSideWebPart<IInvo
           groups: [
             {
               groupName: 'Invoice Settings',
-              groupFields: PropertyPaneFields
+              groupFields: propertyPaneFields
             }
           ]
         }
       ]
     };
-}
-
-private async validateListName(value: string): Promise<string> {
-  const listExists = await this._invoiceService.listExists(value);
-  if (listExists) {
-    return `List with name "${value}" already exists.`;
   }
-  return '';
-}
 
-protected onPropertyPaneFieldChanged(propertyPath: string, newValue: string): void {
-  if (propertyPath === 'listId' && newValue) {
-    this.properties.listId = newValue;
-    this.render();
-  }
-}
-
-private async createList(): Promise<void> {
-  try {
-    const createdListId = await this._invoiceService.createList(this.properties.listName);
-    if (createdListId) {
-      console.log(`List "${this.properties.listName}" created successfully.`);
-      const availableLists = await this._invoiceService.getLists();
-      this.properties.listIdOptions = availableLists.map((list) => ({
-        key: list.Id,
-        text: list.Title
-      }));
-      this.properties.listId = createdListId;
-      this.context.propertyPane.refresh();
+  protected onPropertyPaneFieldChanged(propertyPath: string, newValue: string): void {
+    if (propertyPath === 'listId' && newValue) {
+      this.properties.listId = newValue;
       this.render();
     }
-  } catch (error) {
-    console.error('Error creating list:', error);
-     }
+  }
+  private async createList(): Promise<void> {
+    try {
+      const createdListId = await this._invoiceService.createList(this.properties.listName);
+      if (createdListId) {
+        console.log(`List "${this.properties.listName}" created successfully.`);
+        const availableLists = await this._invoiceService.getLists();
+        this.properties.listIdOptions = availableLists.map((list) => ({
+          key: list.Id,
+          text: list.Title
+        }));
+        this.properties.listId = createdListId;
+        this.context.propertyPane.refresh();
+        this.render();
+      }
+    } catch (error) {
+      console.error('Error creating list:', error);
+    }
+  }
+  private async validateListName(value: string): Promise<string> {
+    const listExists = await this._invoiceService.listExists(value);
+    if (listExists) {
+      return `List with name "${value}" already exists.`;
+    }
+    return '';
   }
 }

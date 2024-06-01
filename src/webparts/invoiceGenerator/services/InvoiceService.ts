@@ -77,10 +77,10 @@ export class InvoiceService {
   // Fetch all SharePoint lists
   public async getLists(): Promise<{ Id: string; Title: string }[]> {
     try {
-      const lists = await sp.web.lists.filter("Hidden eq false").select("Id", "Title").get();
+      const lists = await sp.web.lists.filter('Hidden eq false').select('Id', 'Title').get();
       return lists;
     } catch (error) {
-      console.error("Error fetching lists:", error);
+      console.error('Error fetching lists:', error);
       return [];
     }
   }
@@ -88,22 +88,22 @@ export class InvoiceService {
   // Verify if a list with the given name exists
   public async listExists(listName: string): Promise<boolean> {
     try {
-      const lists = await sp.web.lists.filter(`Title eq '${listName}'`).select("Id").get();
+      const lists = await sp.web.lists.filter(`Title eq '${listName}'`).select('Id').get();
       return lists.length > 0;
     } catch (error) {
-      console.error("Error checking list existence:", error);
+      console.error('Error checking list existence:', error);
       return false;
     }
   }
 
   // Create a new list
-  public async createList(listName: string): Promise<string | null> {
+  public async createList(listName: string): Promise<string | undefined> {
     try {
-      const createdList = await sp.web.lists.add(listName, "", 100, true);
+      const createdList = await sp.web.lists.add(listName, '', 100, true);
       return createdList.data.Id;
     } catch (error) {
-      console.error("Error creating list:", error);
-      return null;
+      console.error('Error creating list:', error);
+      return undefined;
     }
   }
 }

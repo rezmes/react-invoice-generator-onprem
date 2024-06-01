@@ -36,18 +36,18 @@ export class InvoiceHeader extends React.Component<IInvoiceHeaderProps, {}> {
           <div className={styles.label}>Amount Due</div>
           <div>{amountDue}</div>
           <div className={styles.label}>Issue Date</div>
-          <label htmlFor="issueDate">Issue Date</label>
+          <label htmlFor='issueDate'>Issue Date</label>
           <input
-            type="date"
-            id="issueDate"
+            type='date'
+            id='issueDate'
             value={issueDate.toISOString().split('T')[0]}
             onChange={(e) => onIssueDateChange(new Date(e.target.value))}
           />
           <div className={styles.label}>Due Date</div>
-          <label htmlFor="DueDate">Due Date</label>
+          <label htmlFor='DueDate'>Due Date</label>
           <input
-            type="date"
-            id="DueDate"
+            type='date'
+            id='DueDate'
             value={dueDate.toISOString().split('T')[0]}
             onChange={(e) => onDueDateChange(new Date(e.target.value))}
           />

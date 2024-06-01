@@ -20,6 +20,7 @@ define([], function() {
     pricePlaceholder: "Price",
     submitButtonText: "Add Item",
     addItemButtonText: "Add New Item",
-    downloadPdfButtonText: "Download as PDF"
+    downloadPdfButtonText: "Download as PDF",
+    generatePdfButtonText: "Generate PDF"
   };
 });
