@@ -15,6 +15,7 @@ export class PDFGenerator extends React.Component<IPDFGeneratorProps, {}> {
     if (input) {
       html2canvas(input)
         .then((canvas) => {
+          // tslint:disable-next-line:typedef
           const imgWidth = 208; // Image width in mm (A4 size)
           const imgHeight = canvas.height * imgWidth / canvas.width;
           const contentDataURL = canvas.toDataURL('image/png');

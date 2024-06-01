@@ -60,7 +60,7 @@ export default class InvoiceGeneratorWebPart extends BaseClientSideWebPart<IInvo
   }
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     const { createListToggle, listId, listIdOptions } = this.properties;
-
+// tslint:disable-next-line:typedef
     const propertyPaneFields = [
       PropertyPaneToggle('createListToggle', {
         label: 'Do you want to create a new list?',
@@ -126,9 +126,12 @@ export default class InvoiceGeneratorWebPart extends BaseClientSideWebPart<IInvo
   }
   private async createList(): Promise<void> {
     try {
+      // tslint:disable-next-line:typedef
       const createdListId = await this._invoiceService.createList(this.properties.listName);
       if (createdListId) {
+        // tslint:disable-next-line:typedef
         console.log(`List "${this.properties.listName}" created successfully.`);
+        // tslint:disable-next-line:typedef
         const availableLists = await this._invoiceService.getLists();
         this.properties.listIdOptions = availableLists.map((list) => ({
           key: list.Id,
@@ -142,6 +145,7 @@ export default class InvoiceGeneratorWebPart extends BaseClientSideWebPart<IInvo
       console.error('Error creating list:', error);
     }
   }
+  // tslint:disable-next-line:typedef
   private async validateListName(value: string): Promise<string> {
     const listExists = await this._invoiceService.listExists(value);
     if (listExists) {
